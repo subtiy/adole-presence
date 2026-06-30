@@ -167,7 +167,7 @@
         const SUPABASE_ANON_KEY = "sb_publishable_BZb1EosVds6f8eu_L3_YzQ__dOjJ-Px";
 
         // Mengaktifkan koneksi ke satpam Supabase
-        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         // Fungsi Proses Login
         async function handleLogin(event) {
@@ -180,7 +180,7 @@
             errorElement.style.display = "none"; // Sembunyikan pesan error dulu
 
             // Satpam mengecek ke tabel "members" di Supabase
-            const { data, error } = await supabase
+            const { data, error } = await supabaseClient
                 .from('members')
                 .select('*')
                 .eq('username', usernameInput)
