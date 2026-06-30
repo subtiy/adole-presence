@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>The Love Crew App</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2 family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <style>
+        /* ================= PALETTE & VARIABLES ================= */
+        :root {
+            --bg-white: #ffffff;
+            --light-pink: #ffe8ef;
+            --soft-pink: #f290b3;
+            --bold-pink: #ef7aa4;
+            --accent-blue: #6eaff0;
+            --font-apple: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Inter", sans-serif;
+            
+            --app-shadow: 0 12px 35px rgba(239, 122, 164, 0.12);
+            --widget-shadow: 0 8px 22px rgba(110, 175, 240, 0.15);
+            --hover-shadow: 0 20px 40px rgba(239, 122, 164, 0.25);
+        }
+
+        /* ================= RESET & BASE ================= */
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        
+        body {
+            font-family: var(--font-apple);
+            color: var(--bold-pink);
+            overflow-x: hidden;
+            background-color: var(--light-pink);
+            background-image: 
+                radial-gradient(circle at 0% 0%, rgba(255, 255, 255, 0.9) 0%, transparent 45%),
+                radial-gradient(circle at 100% 100%, rgba(110, 175, 240, 0.15) 0%, transparent 50%),
+                radial-gradient(rgba(242, 144, 179, 0.25) 1.5px, transparent 1.5px);
+            background-size: 100% 100%, 100% 100%, 20px 20px;
+            background-attachment: fixed;
+        }
+
+        h1, h2, h3, h4 { font-family: var(--font-apple); letter-spacing: -0.8px; }
+        
+        /* Tombol Utama Ala Apple UI */
+        .btn-apple {
+            background: var(--accent-blue); color: var(--bg-white); border: none;
+            padding: 12px 24px; border-radius: 16px; font-weight: 700; font-size: 14px;
+            cursor: pointer; transition: 0.2s; width: 100%; box-shadow: var(--widget-shadow);
+        }
+        .btn-apple:hover { transform: scale(1.02); background: var(--bold-pink); }
+        .btn-apple:active { transform: scale(0.97); }
+
+        /* Input Form Style */
+        .input-apple {
+            width: 100%; padding: 14px; border-radius: 16px; 
+            border: 2px solid var(--light-pink); background: var(--light-pink);
+            color: var(--bold-pink); font-weight: 600; font-size: 14px;
+            margin-bottom: 12px; transition: 0.3s; outline: none;
+        }
+        .input-apple:focus { border-color: var(--soft-pink); background: var(--bg-white); }
+
+        /* Layout Grid Utama */
+        #app-wrapper {
+            max-width: 500px; margin: 0 auto; padding: 60px 16px 100px;
+            display: flex; flex-direction: column; gap: 16px;
+        }
+
+        /* ================= WIDGET BOX ================= */
+        .widget {
+            background: var(--bg-white); border-radius: 32px; padding: 26px; 
+            position: relative; box-shadow: var(--app-shadow); overflow: hidden;
+            transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .widget:hover { transform: scale(1.02) translateY(-4px); box-shadow: var(--hover-shadow); }
+        
+        .widget-title { font-size: 24px; font-weight: 900; margin-bottom: 4px; letter-spacing: -0.5px; }
+        .widget-subtitle { font-size: 13px; font-weight: 600; opacity: 0.8; margin-bottom: 16px; }
+
+        /* ================= VIEW STATES (SISTEM PINDAH HALAMAN) ================= */
+        .view-section { display: none; }
+        .view-section.active { display: block; }
+
+        /* Login Screen Design */
+        .login-card { text-align: center; padding: 40px 30px; margin-top: 40px;}
+        .login-logo { width: 70px; height: 70px; background: var(--light-pink); border-radius: 22px; margin: 0 auto 20px; display: flex; justify-content: center; align-items: center; font-size: 32px; }
+
+        /* Misi Gambar Card Design */
+        .misi-image-box { width: 100%; border-radius: 20px; overflow: hidden; margin-bottom: 16px; border: 2px solid var(--light-pink); background: var(--light-pink); min-height: 200px; display: flex; align-items: center; justify-content: center;}
+        .misi-image-box img { width: 100%; height: auto; display: block; }
+
+        /* Daily Checklist Design */
+        .checklist-container { display: flex; flex-direction: column; gap: 10px; }
+        .check-item { background: var(--light-pink); padding: 14px; border-radius: 18px; display: flex; align-items: center; gap: 12px; cursor: pointer; transition: 0.2s; font-weight: 600; font-size: 14px;}
+        .check-box { width: 20px; height: 20px; border-radius: 6px; border: 2.5px solid var(--bold-pink); display: flex; align-items: center; justify-content: center; background: var(--bg-white); transition: 0.2s; flex-shrink: 0;}
+        .check-item.done .check-box { background: var(--bold-pink); }
+        .check-item.done .check-box::after { content: '✓'; color: white; font-size: 12px; font-weight: 900; }
+        .check-item.done span { text-decoration: line-through; opacity: 0.5; }
+
+        /* Navigasi Keluar (Logout) */
+        .logout-link { text-align: center; display: block; margin-top: 20px; font-size: 13px; font-weight: 700; color: var(--soft-pink); text-decoration: none; cursor: pointer;}
+        .logout-link:hover { color: var(--accent-blue); }
+    </style>
+</head>
+<body>
+
+    <div id="app-wrapper">
+
+        <div id="view-login" class="view-section active">
+            <div class="widget login-card">
+                <div class="login-logo">🔒</div>
+                <h2 class="widget-title" style="margin-bottom: 4px;">Damsels & Lads</h2>
+                <p class="widget-subtitle">Masukkan sandi loker rahasiamu</p>
+                
+                <form id="login-form" onsubmit="handleLogin(event)">
+                    <input type="text" id="input-username" class="input-apple" placeholder="Username" required autocomplete="off">
+                    <input type="password" id="input-password" class="input-apple" placeholder="Password" required>
+                    <button type="submit" class="btn-apple">Buka Loker ✨</button>
+                </form>
+                <p id="login-error" style="color: red; font-size: 12px; font-weight: 600; margin-top: 12px; display: none;">Username atau Password salah! ✕</p>
+            </div>
+        </div>
+
+        <div id="view-locker" class="view-section">
+            
+            <div class="widget" style="background: transparent; box-shadow: none; padding: 10px 4px; transform: none !important;">
+                <p class="header-date" style="font-size: 12px; font-weight: 800; color: var(--accent-blue); letter-spacing: 0.5px; text-transform: uppercase;">MEMBER PORTAL</p>
+                <h1 class="header-title" id="welcome-title" style="font-size: 34px; font-weight: 900; color: var(--bold-pink); line-height: 1.1;">Halo, Member! ✨</h1>
+            </div>
+
+            <div class="widget">
+                <h2 class="widget-title">Misi Kamu 🎬</h2>
+                <p class="widget-subtitle">Download gambar di bawah dan kerjakan misinya!</p>
+                
+                <div class="misi-image-box" id="misi-container">
+                    <p style="font-weight: 600; opacity: 0.5;" id="misi-loading">Memuat lembar misi...</p>
+                </div>
+                
+                <a id="btn-download-misi" href="#" download class="btn-apple" style="text-decoration: none; display: block; text-align: center;">💾 Download Gambar Misi</a>
+            </div>
+
+            <div class="widget" style="margin-top: 8px;">
+                <h2 class="widget-title">Daily Checklist 🎯</h2>
+                <p class="widget-subtitle">Checklist harianmu (Otomatis kesimpen di HP)</p>
+                
+                <div class="checklist-container">
+                    <div class="check-item" onclick="toggleCheck(this, 'check1')">
+                        <div class="check-box"></div><span>Minum Air Putih 1 Liter 💧</span>
+                    </div>
+                    <div class="check-item" onclick="toggleCheck(this, 'check2')">
+                        <div class="check-box"></div><span>Absen & Cek Template Misi ✍️</span>
+                    </div>
+                    <div class="check-item" onclick="toggleCheck(this, 'check3')">
+                        <div class="check-box"></div><span>Share Progress Hari Ini di Grup 💖</span>
+                    </div>
+                </div>
+            </div>
+
+            <a class="logout-link" onclick="handleLogout()">Logout / Keluar Loker ✕</a>
+        </div>
+
+    </div>
+
+    <script>
+        // ================= TEMPAT PASTE KUNCI SUPABASE KAMU =================
+        const SUPABASE_URL = "https://rfbwfctbbrvvgwabtwui.supabase.co/rest/v1/";
+        const SUPABASE_ANON_KEY = "sb_publishable_BZb1EosVds6f8eu_L3_YzQ__dOjJ-Px";
+
+        // Mengaktifkan koneksi ke satpam Supabase
+        const supabase =捷supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        // Fungsi Proses Login
+        async function handleLogin(event) {
+            event.preventDefault(); // Mencegah web reload otomatis
+            
+            const usernameInput = document.getElementById('input-username').value.trim().toLowerCase();
+            const passwordInput = document.getElementById('input-password').value;
+            const errorElement = document.getElementById('login-error');
+            
+            errorElement.style.display = "none"; // Sembunyikan pesan error dulu
+
+            // Satpam mengecek ke tabel "members" di Supabase
+            const { data, error } = await supabase
+                .from('members')
+                .select('*')
+                .eq('username', usernameInput)
+                .eq('password', passwordInput)
+                .single(); // Kita cuma ambil 1 baris data yang cocok
+
+            if (data) {
+                // JIKA COCOK, simpan data login di memori browser biar kalau di-refresh gak log out
+                localStorage.setItem('currentUser', JSON.stringify(data));
+                bukaRuangLocker(data);
+            } else {
+                // JIKA SALAH, tampilin teks merah eror
+                errorElement.style.display = "block";
+            }
+        }
+
+        // Fungsi Membuka Ruang Loker Setelah Sukses Login
+        function bukaRuangLocker(user) {
+            // Pindah halaman visual
+            document.getElementById('view-login').classList.remove('active');
+            document.getElementById('view-locker').classList.add('active');
+            
+            // Ubah teks salam sesuai nama yang login (Huruf kapital di awal)
+            const namaKapital = user.username.charAt(0).toUpperCase() + user.username.slice(1);
+            document.getElementById('welcome-title').innerText = `Halo, ${namaKapital}! ✨`;
+
+            // Muat gambar misi miliknya
+            const misiContainer = document.getElementById('misi-container');
+            const downloadBtn = document.getElementById('btn-download-misi');
+            
+            if (user.misi) {
+                // Kita masukkan tag gambar asli menggunakan nama file dari database
+                misiContainer.innerHTML = `<img src="${user.misi}" alt="Misi ${user.username}">`;
+                downloadBtn.href = user.misi; // Set link download tombolnya
+                downloadBtn.style.display = "block";
+            } else {
+                misiContainer.innerHTML = `<p style="font-weight: 600; opacity: 0.5; padding: 20px; text-align:center;">Belum ada misi baru untukmu saat ini! 💌</p>`;
+                downloadBtn.style.display = "none";
+            }
+
+            // Muat status checklist harian yang tersimpan di HP mereka
+            loadChecklistState();
+        }
+
+        // Fungsi Checklist Harian (Local HP Storage)
+        function toggleCheck(element, idChecklist) {
+            element.classList.toggle('done');
+            
+            // Simpan status centangnya ke memori HP
+            const isDone = element.classList.contains('done');
+            localStorage.setItem(idChecklist, isDone ? 'true' : 'false');
+            
+            // Animasi tekan halus
+            element.style.transform = 'scale(0.96)';
+            setTimeout(() => { element.style.transform = ''; }, 100);
+        }
+
+        function loadChecklistState() {
+            // Cek satu-satu laci memori HP, kalau dulunya dicentang, kita pasang lagi centangnya
+            const items = document.querySelectorAll('.check-item');
+            const ids = ['check1', 'check2', 'check3'];
+            
+            items.forEach((item, index) => {
+                const savedState = localStorage.getItem(ids[index]);
+                if (savedState === 'true') {
+                    item.classList.add('done');
+                } else {
+                    item.classList.remove('done');
+                }
+            });
+        }
+
+        // Fungsi Keluar Akun (Logout)
+        function handleLogout() {
+            localStorage.removeItem('currentUser'); // Hapus ingatan login
+            document.getElementById('view-locker').classList.remove('active');
+            document.getElementById('view-login').classList.add('active');
+            document.getElementById('input-password').value = ""; // Kosongkan form password
+        }
+
+        // AUTO-CHECK: Tiap kali web dibuka, cek apakah mereka statusnya sudah login atau belum
+        window.addEventListener('DOMContentLoaded', () => {
+            const userTerbaca = localStorage.getItem('currentUser');
+            if (userTerbaca) {
+                bukaRuangLocker(JSON.stringify(userTerbaca));
+            }
+        });
+    </script>
+</body>
+</html>
