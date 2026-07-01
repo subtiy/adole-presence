@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>The Love Crew App</title>
+    <title>ADOLE PRESENCE LOG</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2 family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -114,7 +114,15 @@
                 
                 <form id="login-form" onsubmit="handleLogin(event)">
                     <input type="text" id="input-username" class="input-apple" placeholder="Username" required autocomplete="off">
-                    <input type="password" id="input-password" class="input-apple" placeholder="Password" required>
+                    <div style="position: relative; margin-bottom: 12px;">
+                        <!-- Input password aslinya, margin-bottom di-nol-kan karena udah dipindah ke div pembungkus -->
+                        <input type="password" id="input-password" class="input-apple" placeholder="Password" style="margin-bottom: 0;" required>
+    
+                        <!-- Ikon mata yang posisinya melayang di sebelah kanan -->
+                        <span id="toggle-password" onclick="toggleVisibility()" style="position: absolute; right: 16px; top: 50%; transform: translateY(-50%); cursor: pointer; font-size: 18px; user-select: none;">
+        👁️
+                        </span>
+                    </div>
                     <button type="submit" class="btn-apple">Buka Loker ✨</button>
                 </form>
                 <p id="login-error" style="color: red; font-size: 12px; font-weight: 600; margin-top: 12px; display: none;">Username atau Password salah! ✕</p>
