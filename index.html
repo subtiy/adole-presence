@@ -204,7 +204,21 @@
                 errorElement.style.display = "block";
             }
         }
-
+        
+        // Fungsi untuk buka/tutup mata password
+        function toggleVisibility() {
+            const passInput = document.getElementById('input-password');
+            const toggleIcon = document.getElementById('toggle-password');
+            
+            if (passInput.type === 'password') {
+                passInput.type = 'text';
+                toggleIcon.innerText = '🙈'; // Ganti ikon pas password kelihatan
+            } else {
+                passInput.type = 'password';
+                toggleIcon.innerText = '👁️'; // Balikin ikon semula
+            }
+        }
+        
         // Fungsi Membuka Ruang Loker Setelah Sukses Login
         function bukaRuangLocker(user) {
             // Pindah halaman visual
