@@ -114,8 +114,8 @@
         <div id="view-login" class="view-section active">
             <div class="widget login-card">
                 <div class="login-logo">🔒</div>
-                <h2 class="widget-title" style="margin-bottom: 4px;">Damsels & Lads</h2>
-                <p class="widget-subtitle">Masukkan sandi loker rahasiamu</p>
+                <h2 class="widget-title" style="margin-bottom: 4px;">welcome, damsels & lads!</h2>
+                <p class="widget-subtitle">we've designated a special locker just for you!</p>
                 
                 <form id="login-form" onsubmit="handleLogin(event)">
                     <input type="text" id="input-username" class="input-apple" placeholder="username" required autocomplete="off">
@@ -128,9 +128,9 @@
         👁️
                         </span>
                     </div>
-                    <button type="submit" class="btn-apple">Buka Loker ✨</button>
+                    <button type="submit" class="btn-apple">open my locker</button>
                 </form>
-                <p id="login-error" style="color: red; font-size: 12px; font-weight: 600; margin-top: 12px; display: none;">Username atau Password salah! ✕</p>
+                <p id="login-error" style="color: red; font-size: 12px; font-weight: 600; margin-top: 12px; display: none;">username atau password salah! ✕</p>
             </div>
         </div>
 
@@ -142,34 +142,34 @@
             </div>
 
             <div class="widget">
-                <h2 class="widget-title">Misi Kamu 🎬</h2>
-                <p class="widget-subtitle">Download gambar di bawah dan kerjakan misinya!</p>
+                <h2 class="widget-title">the 1st mission</h2>
+                <p class="widget-subtitle">lorem ipsum penjelasan singkat misi</p>
                 
                 <div class="misi-image-box" id="misi-container">
-                    <p style="font-weight: 600; opacity: 0.5;" id="misi-loading">Memuat lembar misi...</p>
+                    <p style="font-weight: 600; opacity: 0.5;" id="misi-loading">loading your mission...</p>
                 </div>
                 
                 <a id="btn-download-misi" href="#" download class="btn-apple" style="text-decoration: none; display: block; text-align: center;">💾 Download Gambar Misi</a>
             </div>
 
             <div class="widget" style="margin-top: 8px;">
-                <h2 class="widget-title">Daily Checklist 🎯</h2>
-                <p class="widget-subtitle">Checklist harianmu (Otomatis kesimpen di HP)</p>
+                <h2 class="widget-title">daily checklist</h2>
+                <p class="widget-subtitle">what did you do today? let us know!</p>
                 
                 <div class="checklist-container">
                     <div class="check-item" onclick="toggleCheck(this, 'check1')">
-                        <div class="check-box"></div><span>Minum Air Putih 1 Liter 💧</span>
+                        <div class="check-box"></div><span>complete the daily post</span>
                     </div>
                     <div class="check-item" onclick="toggleCheck(this, 'check2')">
-                        <div class="check-box"></div><span>Absen & Cek Template Misi ✍️</span>
+                        <div class="check-box"></div><span>join the game night</span>
                     </div>
                     <div class="check-item" onclick="toggleCheck(this, 'check3')">
-                        <div class="check-box"></div><span>Share Progress Hari Ini di Grup 💖</span>
+                        <div class="check-box"></div><span>appreciate my family (damsels & lads)</span>
                     </div>
                 </div>
             </div>
 
-            <a class="logout-link" onclick="handleLogout()">Logout / Keluar Loker ✕</a>
+            <a class="logout-link" onclick="handleLogout()">logout here ✕</a>
         </div>
 
     </div>
@@ -232,7 +232,7 @@
             
             // Ubah teks salam sesuai nama yang login (Huruf kapital di awal)
             const namaKapital = user.username.charAt(0).toUpperCase() + user.username.slice(1);
-            document.getElementById('welcome-title').innerText = `Halo, ${namaKapital}! ✨`;
+            document.getElementById('welcome-title').innerText = `Hello, ${namaKapital}!`;
 
             // Muat gambar misi miliknya
             const misiContainer = document.getElementById('misi-container');
