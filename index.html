@@ -59,6 +59,11 @@
             margin-bottom: 12px; transition: 0.3s; outline: none;
         }
         .input-apple:focus { border-color: var(--soft-pink); background: var(--bg-white); }
+        /* Mengubah warna teks Username & Password */
+        .input-apple::placeholder {
+            color: var(--soft-pink);
+            opacity: 1;
+        }
 
         /* Layout Grid Utama */
         #app-wrapper {
@@ -113,10 +118,10 @@
                 <p class="widget-subtitle">Masukkan sandi loker rahasiamu</p>
                 
                 <form id="login-form" onsubmit="handleLogin(event)">
-                    <input type="text" id="input-username" class="input-apple" placeholder="Username" required autocomplete="off">
+                    <input type="text" id="input-username" class="input-apple" placeholder="username" required autocomplete="off">
                     <div style="position: relative; margin-bottom: 12px;">
                         <!-- Input password aslinya, margin-bottom di-nol-kan karena udah dipindah ke div pembungkus -->
-                        <input type="password" id="input-password" class="input-apple" placeholder="Password" style="margin-bottom: 0;" required>
+                        <input type="password" id="input-password" class="input-apple" placeholder="password" style="margin-bottom: 0;" required>
     
                         <!-- Ikon mata yang posisinya melayang di sebelah kanan -->
                         <span id="toggle-password" onclick="toggleVisibility()" style="position: absolute; right: 16px; top: 50%; transform: translateY(-50%); cursor: pointer; font-size: 18px; user-select: none;">
